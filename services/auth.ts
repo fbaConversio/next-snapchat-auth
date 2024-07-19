@@ -2,7 +2,7 @@ import qs from 'query-string';
 
 import { env } from '@/utils';
 
-export function getAuthorizeUrl(scope = 'snapchat-marketing-api') {
+export function getAuthorizeUrl(scope = 'snapchat-marketing-api snapchat-profile-api') {
   const { CLIENT_ID, REDIRECT_URI } = env();
 
   return `https://accounts.snapchat.com/login/oauth2/authorize?${qs.stringify({
