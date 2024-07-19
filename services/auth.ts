@@ -2,13 +2,13 @@ import qs from 'query-string';
 
 import { env } from '@/utils';
 
-export function getAuthorizeUrl(scope = 'user-read-private user-read-email') {
+export function getAuthorizeUrl(scope = '') {
   const { CLIENT_ID, REDIRECT_URI } = env();
 
-  return `https://accounts.spotify.com/authorize?${qs.stringify({
+  return `https://accounts.snapchat.com/login/oauth2/authorize?${qs.stringify({
     response_type: 'code',
     client_id: CLIENT_ID,
-    scope,
+    scope: encodeURIComponent(scope),
     redirect_uri: REDIRECT_URI,
   })}`;
 }
@@ -20,11 +20,13 @@ export async function getAccessToken(code: string): Promise<{
   expires_in: number;
   refresh_token: string;
 }> {
-  const { REDIRECT_URI } = env();
+  const { REDIRECT_URI, CLIENT_ID, CLIENT_SECRET } = env();
   const { url, ...init } = getTokenReqConfig({
     code,
     redirect_uri: REDIRECT_URI,
     grant_type: 'authorization_code',
+    client_secret: CLIENT_SECRET,
+    client_id: CLIENT_ID,
   });
 
   return fetch(url, init).then((res) => res.json());
@@ -37,8 +39,11 @@ export async function getRefreshToken(refresh_token: string): Promise<{
   refresh_token: string;
   scope: string;
 }> {
+  const { CLIENT_ID, CLIENT_SECRET } = env();
   const { url, ...init } = getTokenReqConfig({
     grant_type: 'refresh_token',
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET,
     refresh_token,
   });
 
@@ -46,15 +51,11 @@ export async function getRefreshToken(refresh_token: string): Promise<{
 }
 
 function getTokenReqConfig(body: Record<string, string>) {
-  const { CLIENT_ID, CLIENT_SECRET } = env();
-  const BASIC = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString('base64');
-
   return {
-    url: 'https://accounts.spotify.com/api/token',
+    url: 'https://accounts.snapchat.com/login/oauth2/access_token',
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
-      Authorization: `Basic ${BASIC}`,
     },
     body: new URLSearchParams(body),
   };
