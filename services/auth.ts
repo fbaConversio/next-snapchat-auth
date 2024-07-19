@@ -9,7 +9,7 @@ export function getAuthorizeUrl(scope = 'snapchat-marketing-api') {
     response_type: 'code',
     client_id: CLIENT_ID,
     scope: scope,
-    redirect_uri: encodeURIComponent(REDIRECT_URI),
+    redirect_uri: REDIRECT_URI,
   })}`;
 }
 
