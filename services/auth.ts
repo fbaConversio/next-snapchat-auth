@@ -10,6 +10,7 @@ export function getAuthorizeUrl(scope = 'snapchat-marketing-api snapchat-profile
     client_id: CLIENT_ID,
     scope: scope,
     redirect_uri: REDIRECT_URI,
+    state: 'cool_dude',
   })}`;
 }
 

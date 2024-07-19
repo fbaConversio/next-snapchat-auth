@@ -4,6 +4,7 @@ import { getAuthorizeUrl, getAccessToken } from '@/services/auth';
 import { Session } from '@/utils';
 
 export async function GET(req: NextRequest) {
+  console.log(req.nextUrl);
   const session = Session.get();
   if (session) return NextResponse.redirect(new URL('/dashboard', req.url));
 
